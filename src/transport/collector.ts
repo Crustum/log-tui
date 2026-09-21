@@ -260,7 +260,7 @@ export class CollectorClient {
             this.control = null;
             throw new CollectorError(
                 "protocol",
-                `protocol mismatch (server v${ready?.v ?? "?"}, host v${PROTOCOL_VERSION}) — update the plugin and @crustum/cake-logs-tui together.`,
+                `protocol mismatch (server v${ready?.v ?? "?"}, host v${PROTOCOL_VERSION}) — update the plugin and @crustum/log-tui together.`,
             );
         }
     }

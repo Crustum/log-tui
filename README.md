@@ -1,4 +1,4 @@
-# @crustum/cake-logs-tui
+# @crustum/log-tui
 
 CakePHP log viewer TUI. OpenTUI host for `bin/cake logs tui` (PHP collector over stdio).
 

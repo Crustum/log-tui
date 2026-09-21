@@ -65,7 +65,7 @@ function gte(version: string, min: readonly [number, number, number]): boolean {
 }
 
 const program = new Command()
-    .name("cake-logs-tui")
+    .name("log-tui")
     .description("CakePHP log TUI host (OpenTUI). Phase 2: --fake shell, no PHP needed.")
     .option("--fake", "Run the synthetic event generator (no PHP child)", false)
     .option("--tail <n>", "Backfill lines per source (Phase 3)", parsePositiveInt, 200)
@@ -129,7 +129,7 @@ function combinedFilter(): string {
 
 if (!runtimeOk()) {
     process.stderr.write(
-        `cake-logs-tui needs Bun >= 1.3 or Node >= 26.4 (got node ${process.versions.node ?? "?"}` +
+        `log-tui needs Bun >= 1.3 or Node >= 26.4 (got node ${process.versions.node ?? "?"}` +
             ", bun " + ((process.versions as Record<string, string | undefined>)["bun"] ?? "none") + "). " +
             "Use `bin/cake logs tail` instead — it is PHP-only and always works.\n",
     );

@@ -2,7 +2,7 @@ import { appendFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-const LOG_FILE = join(tmpdir(), "cake-logs-tui-debug.log");
+const LOG_FILE = join(tmpdir(), "log-tui-debug.log");
 
 /**
  * File debug log, gated by `CAKE_LOGS_TUI_DEBUG=1`.

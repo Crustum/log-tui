@@ -3,7 +3,7 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "@crustum/cake-logs-tui",
+      "name": "@crustum/log-tui",
       "dependencies": {
         "@opentui/core": "0.5.11",
         "commander": "^15.0.0",

@@ -1,5 +1,5 @@
 {
-    "name": "@crustum/cake-logs-tui",
+    "name": "@crustum/log-tui",
     "version": "0.1.0",
     "description": "CakePHP log TUI — OpenTUI host for bin/cake logs tui (Phase 2: fake-data shell)",
     "keywords": [
@@ -14,7 +14,7 @@
     "license": "MIT",
     "type": "module",
     "bin": {
-        "cake-logs-tui": "dist/cli.js"
+        "log-tui": "dist/cli.js"
     },
     "main": "dist/cli.js",
     "types": "dist/cli.d.ts",

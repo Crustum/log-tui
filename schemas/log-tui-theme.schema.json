@@ -2,7 +2,7 @@
     "$id": "https://raw.githubusercontent.com/Crustum/log-tui/main/schemas/log-tui-theme.schema.json",
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "title": "CakePHP log TUI theme",
-    "description": "Theme file for the cake-logs-tui terminal UI.",
+    "description": "Theme file for the log-tui terminal UI.",
     "type": "object",
     "required": ["name", "theme"],
     "additionalProperties": false,
