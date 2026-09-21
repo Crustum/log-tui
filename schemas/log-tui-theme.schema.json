@@ -1,0 +1,58 @@
+{
+    "$id": "https://raw.githubusercontent.com/Crustum/log-tui/main/schemas/log-tui-theme.schema.json",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "CakePHP log TUI theme",
+    "description": "Theme file for the cake-logs-tui terminal UI.",
+    "type": "object",
+    "required": ["name", "theme"],
+    "additionalProperties": false,
+    "properties": {
+        "$schema": { "type": "string" },
+        "name": { "type": "string", "minLength": 1 },
+        "defs": {
+            "type": "object",
+            "description": "Reusable color definitions. Theme values may reference these by name.",
+            "additionalProperties": { "$ref": "#/$defs/hexColor" }
+        },
+        "theme": {
+            "type": "object",
+            "required": ["background", "panel", "border", "text", "dim", "accent", "focus", "levels"],
+            "additionalProperties": false,
+            "properties": {
+                "background": { "$ref": "#/$defs/colorValue" },
+                "panel": { "$ref": "#/$defs/colorValue" },
+                "border": { "$ref": "#/$defs/colorValue" },
+                "text": { "$ref": "#/$defs/colorValue" },
+                "dim": { "$ref": "#/$defs/colorValue" },
+                "accent": { "$ref": "#/$defs/colorValue" },
+                "focus": { "$ref": "#/$defs/colorValue" },
+                "levels": {
+                    "type": "object",
+                    "required": ["debug", "info", "notice", "warning", "error", "critical", "alert", "emergency"],
+                    "additionalProperties": false,
+                    "properties": {
+                        "debug": { "$ref": "#/$defs/colorValue" },
+                        "info": { "$ref": "#/$defs/colorValue" },
+                        "notice": { "$ref": "#/$defs/colorValue" },
+                        "warning": { "$ref": "#/$defs/colorValue" },
+                        "error": { "$ref": "#/$defs/colorValue" },
+                        "critical": { "$ref": "#/$defs/colorValue" },
+                        "alert": { "$ref": "#/$defs/colorValue" },
+                        "emergency": { "$ref": "#/$defs/colorValue" }
+                    }
+                }
+            }
+        }
+    },
+    "$defs": {
+        "hexColor": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+        },
+        "colorValue": {
+            "description": "A #rrggbb hex color or a reference to a key in defs (resolved by the theme loader; refs are NOT validated here).",
+            "type": "string",
+            "minLength": 1
+        }
+    }
+}

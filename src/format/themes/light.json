@@ -1,0 +1,33 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Crustum/log-tui/main/schemas/log-tui-theme.schema.json",
+    "name": "light",
+    "defs": {
+        "paper": "#f8fafc",
+        "panelGrey": "#e2e8f0",
+        "lineGrey": "#94a3b8",
+        "inkNavy": "#0f172a",
+        "mutedSlate": "#475569",
+        "burntAmber": "#b45309",
+        "focusBlue": "#2563eb",
+        "deepRed": "#991b1b"
+    },
+    "theme": {
+        "background": "paper",
+        "panel": "panelGrey",
+        "border": "lineGrey",
+        "text": "inkNavy",
+        "dim": "mutedSlate",
+        "accent": "burntAmber",
+        "focus": "focusBlue",
+        "levels": {
+            "debug": "#6b7280",
+            "info": "#1d4ed8",
+            "notice": "#0e7490",
+            "warning": "burntAmber",
+            "error": "#dc2626",
+            "critical": "deepRed",
+            "alert": "deepRed",
+            "emergency": "deepRed"
+        }
+    }
+}
