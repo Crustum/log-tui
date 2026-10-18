@@ -47,7 +47,7 @@ export class CollectorError extends Error {
 const SHUTDOWN_GRACE_MS = 2000;
 
 /**
- * Client for one `logs serve` child (PROTOCOL.md, v1).
+ * Client for one `dev log-serve` child (PROTOCOL.md, v1).
  *
  * Spawns the PHP collector, waits for `ready` (refusing on version mismatch),
  * then dispatches server messages to `events`. The host owns all state —
@@ -287,7 +287,7 @@ export class CollectorClient {
                     reject(
                         new CollectorError(
                             "spawn",
-                            `could not start the collector (${messageOf(err)}). Use \`bin/cake logs tail\` instead — it is PHP-only and always works.`,
+                            `could not start the collector (${messageOf(err)}). Use \`bin/cake dev log-tail\` instead — it is PHP-only and always works.`,
                         ),
                     ),
                 );

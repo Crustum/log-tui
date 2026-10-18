@@ -1,13 +1,13 @@
 # @crustum/log-tui
 
-CakePHP log viewer TUI. OpenTUI host for `bin/cake logs tui` (PHP collector over stdio).
+CakePHP log viewer TUI. OpenTUI host for `bin/cake dev log-tui` (PHP collector over stdio).
 
 Built with [@opentui/core](https://opentui.com)
 
 ## Requirements
 
 - **Bun >= 1.3 or Node >= 26.4.** Native `win32-x64/arm64` prebuilds exist. Windows supported.
-- Without a new-enough runtime, `bin/cake logs tui` fails fast with a message pointing at `bin/cake logs tail` (PHP-only, always works). No silent inline fallback — an unstructured dump is not this tool.
+- Without a new-enough runtime, `bin/cake dev log-tui` fails fast with a message pointing at `bin/cake dev log-tail` (PHP-only, always works). No silent inline fallback — an unstructured dump is not this tool.
 
 ## Usage
 
@@ -37,7 +37,7 @@ node dist/cli.js --tail 200 --sources cake_live,cake_file
 | `--headless` | NDJSON to stdout, no TUI | `false` |
 | `--buffer-size <n>` | Ring-buffer lines per source | `10000` |
 | `--filter <expr>` | Prefill the global filter (grammar v1) | `""` |
-| `--level <level>` | Minimum level (`debug`..`emergency`, same as `logs tail --level`) | `""` |
+| `--level <level>` | Minimum level (`debug`..`emergency`, same as `dev log-tail --level`) | `""` |
 | `--theme <name>` | Theme: `dark` or `light` | `dark` |
 | `--view <mode>` | Log display: `lines` or `cards` | `lines` |
 

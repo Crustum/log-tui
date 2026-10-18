@@ -67,8 +67,10 @@ describe("app integration (TestRenderer)", () => {
         const { setup } = await boot();
         const frame = setup.captureCharFrame();
 
-        expect(frame).toContain("All(");
-        expect(frame).toContain("payments(");
+        // Sidebar is names only; counts live in the header.
+        expect(frame).toContain("1 All");
+        expect(frame).toContain("2 payments");
+        expect(frame).toContain("All(40");
         // Follow shows the tail, not the head.
         expect(frame).toContain("message 39 from other");
         expect(frame).not.toContain("message 0 from payments");
@@ -375,7 +377,7 @@ describe("app integration (TestRenderer)", () => {
 
         expect(frame).toContain("lvl:warning+");
         expect(frame).toContain("message 35");
-        // Sidebar counts/badges stay tab-only (text-filter precedent).
+        // Header counts stay tab-only (text-filter precedent).
         expect(frame).toContain("All(40");
         // Info rows are gone from the content (the `top:` footer still samples
         // unfiltered events, so scope the negative check to non-footer lines).
@@ -409,7 +411,9 @@ describe("app integration (TestRenderer)", () => {
         await setup.flush();
 
         const hidden = setup.captureCharFrame();
-        expect(hidden).not.toContain("All(41");
+        // Sidebar names are gone, but the header keeps the selected-tab counts.
+        expect(hidden).not.toContain("1 All");
+        expect(hidden).toContain("All(41");
         expect(hidden).toContain("END");
 
         // Digits still switch tabs while hidden.
@@ -419,7 +423,8 @@ describe("app integration (TestRenderer)", () => {
 
         await setup.mockInput.pressKeys(["b"]);
         await setup.flush();
-        expect(setup.captureCharFrame()).toContain("All(41");
+        // Active tab is now payments; the header tracks the selected tab.
+        expect(setup.captureCharFrame()).toContain("payments(20");
     });
 
     test("hidden sidebar never steals focus: tab/digits/arrows stay on content", async () => {

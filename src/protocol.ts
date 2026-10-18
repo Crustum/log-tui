@@ -34,7 +34,7 @@ export interface LogEvent {
 }
 
 /**
- * One application `Log` engine config, as announced by `logs serve` in
+ * One application `Log` engine config, as announced by `dev log-serve` in
  * `ready.logConfigs` (tabs plan §4). Sanitized PHP-side: name + file +
  * scopes + levels only — never `url`, never credentials. Our own
  * `dev_console_tail` engine is excluded server-side.
@@ -54,7 +54,7 @@ export interface LogConfig {
  * Explicit tab definition from `config/logs_tui.php` (`DevConsole.logs.tabs`,
  * tabs plan §7). Announced as metadata in `ready.tabs` — announcing is not
  * filtering, so the stateless-collector rule still holds. `level` is a
- * *minimum* severity (same as `logs tail --level`), not an exact match.
+ * *minimum* severity (same as `dev log-tail --level`), not an exact match.
  */
 export interface TabDef {
     title: string;

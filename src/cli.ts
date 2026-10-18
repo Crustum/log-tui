@@ -77,6 +77,7 @@ const program = new Command()
     .option("--level <level>", "Minimum level (debug..emergency)", "")
     .option("--theme <name>", "Theme: dark or light", "dark")
     .option("--view <mode>", "Log display: lines or cards", "lines")
+    .option("--title <name>", "Set the header title")
     .parse();
 
 const opts = program.opts<{
@@ -90,6 +91,7 @@ const opts = program.opts<{
     level: string;
     theme: string;
     view: string;
+    title?: string;
 }>();
 
 if (opts.view !== "lines" && opts.view !== "cards") {
@@ -105,7 +107,7 @@ if (sources.length === 0) {
     program.error("error: --sources must list at least one source.");
 }
 
-/** `--level X` is a minimum severity (same as `logs tail --level`). */
+/** `--level X` is a minimum severity (same as `dev log-tail --level`). */
 function levelToFilter(level: string): string {
     const name = level.trim().toLowerCase();
 
@@ -131,7 +133,7 @@ if (!runtimeOk()) {
     process.stderr.write(
         `log-tui needs Bun >= 1.3 or Node >= 26.4 (got node ${process.versions.node ?? "?"}` +
             ", bun " + ((process.versions as Record<string, string | undefined>)["bun"] ?? "none") + "). " +
-            "Use `bin/cake logs tail` instead — it is PHP-only and always works.\n",
+            "Use `bin/cake dev log-tail` instead — it is PHP-only and always works.\n",
     );
     process.exit(1);
 }
@@ -260,7 +262,7 @@ const size = terminalSize();
 if (size && (size.cols < MIN_COLS || size.rows < MIN_ROWS)) {
     process.stderr.write(
         `Terminal too small (${size.cols}x${size.rows}). The log TUI needs at least ` +
-            `${MIN_COLS}x${MIN_ROWS} — enlarge the window, or use \`bin/cake logs tail\` ` +
+            `${MIN_COLS}x${MIN_ROWS} — enlarge the window, or use \`bin/cake dev log-tail\` ` +
             "instead (PHP-only, always works) or --headless for piped output.\n",
     );
     process.exit(1);
@@ -280,7 +282,7 @@ async function createAppOrExit(options: AppOptions): Promise<App> {
         debugLog("App.create failed", err instanceof Error ? err : String(err));
         process.stderr.write(
             `Could not start the TUI${suffix}: ${detail}. Try a larger window, ` +
-                "or use `bin/cake logs tail` instead — it is PHP-only and always works.\n",
+                "or use `bin/cake dev log-tail` instead — it is PHP-only and always works.\n",
         );
         process.exit(1);
     }
@@ -334,6 +336,7 @@ if (opts.fake) {
         theme: opts.theme,
         cwd: process.cwd(),
         view: opts.view as "lines" | "cards",
+        title: opts.title,
     });
 } else {
     // Serve mode: handshake first (tabs come from `ready`), queue anything that
@@ -399,6 +402,7 @@ if (opts.fake) {
         theme: opts.theme,
         cwd: client.ready.cwd ?? process.cwd(),
         view: opts.view as "lines" | "cards",
+        title: opts.title,
         logConfigs: client.ready.logConfigs,
         explicitTabs: client.ready.tabs,
     });

@@ -1,23 +1,32 @@
 import { describe, expect, test } from "bun:test";
+import { contrastText, TAB_COLORS_DARK, tabColor } from "./format/tabColors.js";
 import { formatSidebarRow, sidebarWidth } from "./ui/Sidebar.js";
 import { UiState, filterRowsFor, viewportRows } from "./store/ui.js";
 
 describe("sidebar", () => {
-    test("rows show number, counts and badges", () => {
-        expect(formatSidebarRow(0, { title: "All", kind: "all" }, { count: 12, badge: 0, dropped: 0 })).toBe(
-            "1 All(12)",
-        );
-        expect(
-            formatSidebarRow(1, { title: "payments", kind: "engine" }, { count: 3, badge: 2, dropped: 1 }),
-        ).toBe("2 payments(3) !2 ▽1");
-        expect(formatSidebarRow(9, { title: "x", kind: "all" }, { count: 0, badge: 0, dropped: 0 })[0]).toBe(" ");
+    test("rows show number and title only (counts live in the header)", () => {
+        expect(formatSidebarRow(0, { title: "All", kind: "all" })).toBe("1 All");
+        expect(formatSidebarRow(1, { title: "payments", kind: "engine" })).toBe("2 payments");
+        expect(formatSidebarRow(9, { title: "x", kind: "all" })[0]).toBe(" ");
     });
 
     test("width clamps to [15,40]", () => {
         expect(sidebarWidth([])).toBe(15);
-        expect(sidebarWidth(["1 All(1)"])).toBe(15);
+        expect(sidebarWidth(["1 All"])).toBe(15);
         expect(sidebarWidth([`9 ${"x".repeat(100)}`])).toBe(40);
-        expect(sidebarWidth(["1 All(128)", "2 payments(12) !2"])).toBe("2 payments(12) !2".length + 2);
+        expect(sidebarWidth(["1 All", "2 payments-upsell-team"])).toBe("2 payments-upsell-team".length + 2);
+    });
+
+    test("tab colors follow the shared ProcessColor palette", () => {
+        // `All` stays neutral; streams cycle the multiplex palette in order.
+        expect(tabColor(0)).toBeNull();
+        expect(tabColor(1)).toBe(TAB_COLORS_DARK[0]);
+        expect(tabColor(2)).toBe(TAB_COLORS_DARK[1]);
+        expect(tabColor(TAB_COLORS_DARK.length + 1)).toBe(TAB_COLORS_DARK[0]);
+        // Pastel fills take black labels (multiplex `contrastText` parity).
+        for (const color of TAB_COLORS_DARK) {
+            expect(contrastText(color)).toBe("#000000");
+        }
     });
 });
 

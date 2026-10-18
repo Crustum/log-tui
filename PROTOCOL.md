@@ -2,7 +2,7 @@
 
 NDJSON, one object per line, `v` on every message. Unknown `t` → ignore; malformed line → ignore, never crash.
 
-## Server → host (PHP `logs serve` stdout)
+## Server → host (PHP `dev log-serve` stdout)
 
 ```ts
 type ServerMsg =
@@ -23,7 +23,7 @@ interface LogConfig {
 
 /**
  * Explicit tab from DevConsole.logs.tabs config. level = minimum severity
- * (same as `logs tail --level`). Empty list = none configured.
+ * (same as `dev log-tail --level`). Empty list = none configured.
  */
 interface TabDef {
     title: string;
@@ -46,7 +46,7 @@ interface TabDef {
   replays on the start-up boundary are suppressed server-side.
 - Sentry webhook/API, syslog UDP, DB poll, SSH remote: explicitly OUT (protocol keeps them possible later).
 
-## Host → server (PHP `logs serve` stdin)
+## Host → server (PHP `dev log-serve` stdin)
 
 ```ts
 type HostMsg =
@@ -58,14 +58,14 @@ type HostMsg =
     | { v: 1; t: "shutdown" };
 ```
 
-## Spawning (contract with `bin/cake logs tui`)
+## Spawning (contract with `bin/cake dev log-tui`)
 
 The host spawns the collector as a child: stdin/stdout pipes (the protocol above),
 stderr piped to the host debug log (`CAKE_LOGS_TUI_DEBUG=1`, never the terminal —
 inherited stderr would scribble over the fullscreen). Serve invocation comes from `CAKE_LOGS_SERVE_COMMAND` env
-(set by the launcher, e.g. `php "…/bin/cake.php" logs serve --tail=200
+(set by the launcher, e.g. `php "…/bin/cake.php" dev log-serve --tail=200
 --sources=cake_live,cake_file`); fallback when unset is
-`php bin/cake.php logs serve` with the host's own `--tail`/`--sources` values.
+`php bin/cake.php dev log-serve` with the host's own `--tail`/`--sources` values.
 
 ## Control channel (dial-back, no version bump)
 

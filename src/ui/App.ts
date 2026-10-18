@@ -1,3 +1,4 @@
+import { homedir } from "node:os";
 import { BoxRenderable, TextRenderable, createCliRenderer, fg, t, createHostClipboard } from "@opentui/core";
 import type { HostClipboardService } from "@opentui/core";
 import { FakeGenerator, FAKE_LOG_CONFIGS } from "../fake.js";
@@ -43,6 +44,8 @@ export interface AppOptions {
     theme?: string;
     cwd?: string;
     view?: ViewMode;
+    /** Header title left of the cwd (defaults to `cake dev log-tui`). */
+    title?: string;
     /** Test seam: fixed terminal size (production reads the live stdout). */
     terminal?: { cols: number; rows: number };
 }
@@ -96,6 +99,7 @@ export class App {
     private keyHandler: ((key: any) => void) | null = null;
     private destroyed = false;
     private cwd: string;
+    private readonly title: string;
     /** First-Ctrl+C timestamp for the double-press quit gate (null = none). */
     private lastCtrlC: number | null = null;
     /** Theme name at the last render — gates overlay repaints on toggle only. */
@@ -117,6 +121,7 @@ export class App {
         this.ui.view = options.view ?? "lines";
         this.logs = new LogsStore(sources, options.bufferSize ?? 10_000);
         this.cwd = options.cwd ?? process.cwd();
+        this.title = options.title ?? "cake dev log-tui";
         this.fakeOptions = options;
 
         if (options.theme) {
@@ -153,7 +158,12 @@ export class App {
         } as any);
         this.renderer.root.add(this.root);
 
-        this.header = new TextRenderable(this.renderer, { id: "app-header", height: 1 } as any);
+        this.header = new TextRenderable(this.renderer, {
+            id: "app-header",
+            height: 1,
+            // Single row: overlong titles clip instead of wrapping (dev-tui parity).
+            wrapMode: "none",
+        } as any);
         (this.root as any).add(this.header as any);
 
         this.middle = new BoxRenderable(this.renderer, {
@@ -517,7 +527,7 @@ export class App {
      */
     private cardWidths(): { bodyWidth: number; lineWidth: number } {
         const { cols } = this.termSize();
-        const sideW = this.sidebarWidth(this.tabStats());
+        const sideW = this.sidebarWidth();
 
         return widthsFor(cols, sideW);
     }
@@ -582,14 +592,12 @@ export class App {
         this.ui.syncFollowAfterCursor(max, list.length);
     }
 
-    private sidebarWidth(stats: TabStats[]): number {
+    private sidebarWidth(): number {
         if (this.ui.sidebarHidden) {
             return 0;
         }
 
-        return sidebarWidth(
-            this.ui.tabs.map((tab, i) => formatSidebarRow(i, tab, stats[i] ?? { count: 0, badge: 0, dropped: 0 })),
-        );
+        return sidebarWidth(this.ui.tabs.map((tab, i) => formatSidebarRow(i, tab)));
     }
 
     private onKey(key: any): void {
@@ -1143,7 +1151,7 @@ export class App {
         }
 
         const stats = this.tabStats();
-        const sideW = this.sidebarWidth(stats);
+        const sideW = this.sidebarWidth();
         const theme = getTheme();
 
         // Re-apply every frame: init-time backgrounds go stale on theme:toggle.
@@ -1151,9 +1159,33 @@ export class App {
         this.middle.backgroundColor = theme.background;
         this.contentBox.backgroundColor = theme.background;
 
-        this.header.content = t`${fg(theme.text)(`cake logs tui · ${this.cwd}`)}`;
+        // Title left, cwd right — same layout as dev-tui (MultiplexApp).
+        // The selected tab summary rides with the title so the sidebar
+        // stays a plain name list: `cake dev log-tui · app · mcp(311) !2`.
+        const shortCwd = this.cwd.replace(homedir(), "~");
+        const activeStats = stats[this.ui.tabIndex] ?? { count: 0, badge: 0, dropped: 0 };
+        let tabSummary = `${tab.title}(${activeStats.count})`;
+
+        if (activeStats.badge > 0) {
+            tabSummary += ` !${activeStats.badge}`;
+        }
+
+        if (activeStats.dropped > 0) {
+            tabSummary += ` ▽${activeStats.dropped}`;
+        }
+
+        let leftText = `${this.title} · ${tabSummary}`;
+        const maxLeft = Math.max(10, cols - shortCwd.length - 1);
+
+        if (leftText.length > maxLeft) {
+            leftText = `${leftText.slice(0, Math.max(0, maxLeft - 1))}…`;
+        }
+
+        const headGap = Math.max(1, cols - leftText.length - shortCwd.length);
+
+        this.header.content = t`${fg(theme.dim)(leftText)}${" ".repeat(headGap)}${fg(theme.dim)(shortCwd)}`;
         this.sidebar.setVisible(!this.ui.sidebarHidden);
-        this.sidebar.render(this.ui, stats);
+        this.sidebar.render(this.ui);
 
         const focusedContent = this.ui.focus === "content";
         this.contentBox.borderColor = focusedContent ? theme.focus : theme.border;

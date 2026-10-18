@@ -3,7 +3,7 @@ import { HELP_SECTIONS, type HelpSection } from "../input/keys.js";
 import { getTheme } from "../format/theme.js";
 import { Modal } from "./Modal.js";
 
-export const HELP_TITLE = "cake logs tui — keys";
+export const HELP_TITLE = "cake dev log-tui — keys";
 
 /** Left column sections, right column sections (balanced by row count). */
 const LEFT_SECTIONS: readonly HelpSection[] = HELP_SECTIONS.slice(0, 4);
