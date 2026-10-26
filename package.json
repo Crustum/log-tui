@@ -40,7 +40,7 @@
         "prepublishOnly": "bun run build"
     },
     "dependencies": {
-        "@opentui/core": "0.6.2",
+        "@opentui/core": "0.6.6",
         "commander": "^15.0.0"
     },
     "devDependencies": {
